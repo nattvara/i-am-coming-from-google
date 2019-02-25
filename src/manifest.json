@@ -6,7 +6,9 @@
     "permissions": [
         "webRequest",
         "webRequestBlocking",
-        "*://*/*"
+        "*://*/*",
+        "tabs",
+        "storage"
     ],
     "background": {
         "scripts": [
@@ -16,6 +18,11 @@
     "applications": {
         "gecko": {
             "id": "i-am-coming-from-google@kristoffersson.org"
+        }
+    },
+    "browser_action": {
+        "default_icon": {
+            "38": "icons/btn-inactive.png"
         }
     }
 }
