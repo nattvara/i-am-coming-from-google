@@ -62,6 +62,12 @@ rewriteRequest = async (e) => {
     localStorage.clear();
     clearCookies();
 
+    for (var i = e.requestHeaders.length - 1; i >= 0; i--) {
+        if (e.requestHeaders[i].name.toLowerCase() == "cookie") {
+            e.requestHeaders.splice(i, 1);
+        }
+    }
+
     e.requestHeaders.push({
         name: 'Referer',
         value: 'https://google.com'
