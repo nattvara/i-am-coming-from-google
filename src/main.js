@@ -6,7 +6,54 @@
  * incomming traffic from google.com to bypass those paywalls.
  */
 
-rewriteRequest = (e) => {
+toggleDomain = async () => {
+    var tabs = await browser.tabs.query({currentWindow: true, active: true});
+    var hostname = parseHostname(tabs[0].url);
+
+    var storage = await browser.storage.local.get('domains');
+    var domains = storage.domains;
+
+    if (!domains) {
+        domains = [];
+    }
+
+    if (domains.indexOf(hostname) != -1) {
+        domains.splice(domains.indexOf(hostname), 1);
+    } else {
+        domains.push(hostname);
+    }
+
+    await browser.storage.local.set({domains: domains})
+
+    reloadPage();
+}
+
+reloadPage = async () => {
+    var tab = await browser.tabs.query({currentWindow: true, active: true});
+    browser.tabs.reload(tab.id, {bypassCache: true});
+}
+
+parseHostname = (url) => {
+    var l = document.createElement("a");
+    l.href = url;
+    return l.hostname;
+};
+
+rewriteRequest = async (e) => {
+
+    var tabs = await browser.tabs.query({currentWindow: true, active: true});
+    var hostname = parseHostname(tabs[0].url);
+
+    var storage = await browser.storage.local.get('domains');
+    var domains = storage.domains;
+
+    if (!domains) {
+        return {requestHeaders: e.requestHeaders};
+    }
+
+    if (domains.indexOf(hostname) == -1) {
+        return {requestHeaders: e.requestHeaders};
+    }
 
     localStorage.clear();
     clearCookies();
@@ -15,9 +62,8 @@ rewriteRequest = (e) => {
         name: 'Referer',
         value: 'https://google.com'
     })
-    return {
-        requestHeaders: e.requestHeaders
-    };
+
+    return {requestHeaders: e.requestHeaders};
 }
 
 /**
@@ -43,6 +89,7 @@ clearCookies = () => {
     }
 }
 
+browser.browserAction.onClicked.addListener(toggleDomain);
 browser.webRequest.onBeforeSendHeaders.addListener(
     rewriteRequest,
     {
