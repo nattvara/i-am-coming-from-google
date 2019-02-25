@@ -41,19 +41,23 @@ parseHostname = (url) => {
 
 rewriteRequest = async (e) => {
 
-    var tabs = await browser.tabs.query({currentWindow: true, active: true});
-    var hostname = parseHostname(tabs[0].url);
+    var tab = await browser.tabs.query({currentWindow: true, active: true});
+    var hostname = parseHostname(tab[0].url);
 
     var storage = await browser.storage.local.get('domains');
     var domains = storage.domains;
 
     if (!domains) {
+        browser.browserAction.setIcon({tabId: tab.id, path: "icons/btn-inactive.png"});
         return {requestHeaders: e.requestHeaders};
     }
 
     if (domains.indexOf(hostname) == -1) {
+        browser.browserAction.setIcon({tabId: tab.id, path: "icons/btn-inactive.png"});
         return {requestHeaders: e.requestHeaders};
     }
+
+    browser.browserAction.setIcon({tabId: tab.id, path: "icons/btn-active.png"});
 
     localStorage.clear();
     clearCookies();
