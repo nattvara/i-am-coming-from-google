@@ -43,3 +43,9 @@ From the repository root
 ```bash
 cd src && zip -r -FS ../build/i-am-coming-from-google.xpi * && cd ..
 ```
+
+## License
+
+MIT © Ludwig Kristoffersson
+
+See [LICENSE file](LICENSE) for more information
