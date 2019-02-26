@@ -1,6 +1,6 @@
 # I am coming from google firefox extension
 
-Adds a refereal header with the value `https://google.com` for specified domains.
+Adds a referer header with the value `https://google.com` for specified domains.
 
 The addon also clears all cookies and localstorage for the provided domains for every request.
 
